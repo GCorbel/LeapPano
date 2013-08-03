@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>three.js webgl - equirectangular panorama demo</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			body {
+				background-color: #000000;
+				margin: 0px;
+				overflow: hidden;
+			}
+
+			#info {
+				position: absolute;
+				top: 0px; width: 100%;
+				color: #ffffff;
+				padding: 5px;
+				font-family:Monospace;
+				font-size:13px;
+				font-weight: bold;
+				text-align:center;
+			}
+
+			a {
+				color: #ffffff;
+			}
+		</style>
+	</head>
+	<body>
+
+		<div id="container"></div>
+		<div id="info">
+      <a href="#" onClick="changeFile('basque.jpg')">See the Grande Basque</a>
+      <a href="#" onClick="changeFile('manitou.jpg')">See the Manitou falls</a>
+    </div>
+
+		<script src="three.js"></script>
+		<script src="LeapPano.js"></script>
+    <script src="leap.js"></script>
+		<script type="text/javascript">
+      window.onload = function() {
+        pano = new LeapPano({files: ['basque.jpg', 'manitou.jpg']})
+        pano.init()
+
+        Leap.loop({enableGestures: true}, function(frame) {
+          pano.setFrame(frame)
+        })
+      }
+
+      function changeFile(file) {
+        pano.setFilePath(file)
+      }
+		</script>
+	</body>
+</html>
