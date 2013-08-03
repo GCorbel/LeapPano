@@ -31,16 +31,16 @@
 
 		<div id="container"></div>
 		<div id="info">
-      <a href="#" onClick="changeFile('basque.jpg')">See the Grande Basque</a>
-      <a href="#" onClick="changeFile('manitou.jpg')">See the Manitou falls</a>
+      <a href="#" onClick="changeFile('images/basque.jpg')">See the Grande Basque</a>
+      <a href="#" onClick="changeFile('images/manitou.jpg')">See the Manitou falls</a>
     </div>
 
-		<script src="three.js"></script>
-		<script src="LeapPano.js"></script>
-    <script src="leap.js"></script>
+		<script src="lib/three.js"></script>
+    <script src="lib/leap.js"></script>
+    <script src="lib/LeapPano.js"></script>
 		<script type="text/javascript">
       window.onload = function() {
-        pano = new LeapPano({files: ['basque.jpg', 'manitou.jpg']})
+        pano = new LeapPano({files: ['images/basque.jpg', 'images/manitou.jpg']})
         pano.init()
 
         Leap.loop({enableGestures: true}, function(frame) {
