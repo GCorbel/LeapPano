@@ -1,4 +1,4 @@
-class LeapPano
+class window.LeapPano
   constructor: (config) ->
     @view = new LeapPano.View()
     @mouse = new LeapPano.Mouse(@view)
