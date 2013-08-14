@@ -55,7 +55,9 @@ class LeapPano.LeapMotion
 
   changeLat: (finger) =>
     y = finger.tipPosition[1]
-    newLat = @view.getLat() + (( y - 160 ) / 320)
+    latRatio = 1 - Math.abs((@view.getLat()) / 80)
+    newLat = @view.getLat() + ((( y - 160 ) / 320) * latRatio)
+
     if newLat < 70 && newLat > -70
       @view.setLat(newLat)
 
