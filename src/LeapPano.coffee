@@ -1,20 +1,39 @@
 class window.LeapPano
-  constructor: (config) ->
-    @view = new LeapPano.View()
-    @mouse = new LeapPano.Mouse(@view)
-    @leap = new LeapPano.LeapMotion(@view)
-    @files = config.files
+  container: null
+  files: []
+  defaultOptions:
+    autoMotion:
+      timeBeforeAutoMove: 2000
+      onStart: true
+      speed: 0.01
+    leapMotion:
+      maxLat: 70
+      minLat: 70
+    view:
+      initialFov: 70
+      initialLon: 0
+      initialLat: 0
+
+  constructor: (options) ->
+    @options = merge(@defaultOptions, options)
+
+    @view = new LeapPano.View(@options.view)
+    @mouse = new LeapPano.Mouse(@view, @options)
+    @leap = new LeapPano.LeapMotion(@view, @options.leapMotion)
+    @auto = new LeapPano.AutoMotion(@view, @options.autoMotion)
+    @files = @options.files
     @view.setFiles(@files)
     @view.setFilePath(@files[0])
 
   init: =>
     @mouse.init()
     @leap.init()
+    @auto.init()
 
     addEventListener "resize", @onWindowResize, false
     @animate()
 
-    container = document.getElementById("container")
+    container = document.getElementById(@options.container)
     container.appendChild @view.getRenderer().domElement
 
   setFilePath: (path) =>
@@ -33,9 +52,65 @@ class window.LeapPano
     requestAnimationFrame @animate
     @view.render()
 
-class LeapPano.LeapMotion
-  constructor: (view) ->
+class LeapPano.AutoMotion
+  @LOOP_SEED: 10
+
+  constructor: (view, options) ->
     @view = view
+    @options = options
+    @count = 0
+    @oldLon = view.getLon()
+    @logLat = view.getLat()
+
+  init: ->
+    if @options.moveOnStart
+      @startToMove()
+    else
+      @checkActivity()
+
+  checkActivity: =>
+    @count += 1
+    if @positionChanged?()
+      @count = 0
+
+    @oldLat = @view.getLat()
+    @oldLon = @view.getLon()
+    
+    if @count == @options.timeBeforeAutoMove / LeapPano.AutoMotion.LOOP_SEED
+      @startToMove()
+    else if @count == 0
+      @stopToMove()
+
+    setTimeout(@checkActivity, LeapPano.AutoMotion.LOOP_SEED)
+
+  positionChanged: =>
+    @view.getLon() != @oldLon || @view.getLat() != @oldLat
+
+  startToMove: =>
+    @continueToMove = true
+    @move()
+
+  stopToMove: =>
+    @continueToMove = false
+
+  move: =>
+    if @continueToMove
+      @view.setLon(@view.getLon() + @options.speed)
+
+      if @view.getLat() > 0
+        @view.setLat(@view.getLat() - @options.speed)
+
+      if @view.getLat() < 0
+        @view.setLat(@view.getLat() + @options.speed)
+
+      @oldLat = @view.getLat()
+      @oldLon = @view.getLon()
+      setTimeout(@move, 1)
+
+class LeapPano.LeapMotion
+  constructor: (view, options) ->
+    @view = view
+    @options = options
     
   setFrame: (frame) ->
     @frame = frame
@@ -58,9 +133,8 @@ class LeapPano.LeapMotion
     latRatio = 1 - Math.abs((@view.getLat()) / 80)
     newLat = @view.getLat() + ((( y - 160 ) / 320) * latRatio)
 
-    if newLat < 70 && newLat > -70
+    if newLat < @options.minLat && newLat > -@options.minLat
       @view.setLat(newLat)
-
 
   checkGestures: =>
     if(@frame.gestures.length > 0)
@@ -75,12 +149,11 @@ class LeapPano.LeapMotion
 
     setTimeout(@checkMotion, 1)
 
-    
 class LeapPano.View
-  constructor: ->
-    @lat = 0
-    @lon = 0
-    @fov = 70
+  constructor: (options) ->
+    @lat = options.initialLat
+    @lon = options.initialLon
+    @fov = options.initialFov
     @phi = 0
     @theta = 0
     @filePath = ''
@@ -111,10 +184,12 @@ class LeapPano.View
     @files = files
 
   switchFile: =>
-    if @filePath == @files[0]
-      @setFilePath @files[1]
-    else
-      @setFilePath @files[0]
+    console.log @files.length
+    if @files.length > 1
+      if @filePath == @files[0]
+        @setFilePath @files[1]
+      else
+        @setFilePath @files[0]
 
   getRenderer: =>
     return @renderer if @renderer
@@ -152,7 +227,6 @@ class LeapPano.View
     mesh.scale.x = -1
     @scene.add mesh
     @scene
-
 
 class LeapPano.Mouse
   constructor: (view) ->

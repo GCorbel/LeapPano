@@ -30,17 +30,14 @@
 	<body>
 
 		<div id="container"></div>
-		<div id="info">
-      <a href="#" onClick="changeFile('images/basque.jpg')">See the Grande Basque</a>
-      <a href="#" onClick="changeFile('images/manitou.jpg')">See the Manitou falls</a>
-    </div>
 
 		<script src="lib/three.js"></script>
     <script src="lib/leap.js"></script>
+    <script src="lib/deepmerge.js"></script>
     <script src="lib/LeapPano.js"></script>
 		<script type="text/javascript">
       window.onload = function() {
-        pano = new LeapPano({files: ['images/basque.jpg', 'images/manitou.jpg']})
+        pano = new LeapPano({container: 'container', files: ['images/basque.jpg'] })
         pano.init()
 
         Leap.loop({enableGestures: true}, function(frame) {
