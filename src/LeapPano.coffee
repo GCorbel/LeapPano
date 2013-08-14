@@ -43,21 +43,36 @@ class LeapPano.LeapMotion
   init: ->
     setTimeout(@checkMotion, 1)
 
+  checkMove: =>
+    finger = @frame.fingers[0]
+    if finger?
+      @changeLon(finger)
+      @changeLat(finger)
+
+  changeLon: (finger) =>
+    x = finger.tipPosition[0]
+    @view.setLon(@view.getLon() + ( x / 320 ))
+
+  changeLat: (finger) =>
+    y = finger.tipPosition[1]
+    newLat = @view.getLat() + (( y - 160 ) / 320)
+    if newLat < 70 && newLat > -70
+      @view.setLat(newLat)
+
+
+  checkGestures: =>
+    if(@frame.gestures.length > 0)
+      gesture = @frame.gestures[0]
+      if gesture.type == "circle"
+        @view.switchFile()
+
   checkMotion: =>
     if @frame?
-      finger = @frame.fingers[0]
-      if finger?
-        x = finger.tipPosition[0]
-        y = finger.tipPosition[1]
-        @view.setLon(@view.getLon() + (x/320))
-        @view.setLat(@view.getLat() + ((y-160)/320))
-
-      if(@frame.gestures.length > 0)
-        gesture = @frame.gestures[0]
-        if gesture.type == "circle"
-          @view.switchFile()
+      @checkMove()
+      @checkGestures()
 
     setTimeout(@checkMotion, 1)
+
     
 class LeapPano.View
   constructor: ->
