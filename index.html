@@ -1,41 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<title>Demo of a panorama viewer with LeapMotion</title>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		<style>
-			body {
-				background-color: #000000;
-				margin: 0px;
-				overflow: hidden;
-			}
+  <head>
+    <title>Demo of a panorama viewer with LeapMotion</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>
+      body {
+        background-color: #000000;
+        margin: 0px;
+        overflow: hidden;
+      }
 
-			#info {
-				position: absolute;
-				top: 0px; width: 100%;
-				color: #ffffff;
-				padding: 5px;
-				font-family:Monospace;
-				font-size:13px;
-				font-weight: bold;
-				text-align:center;
-			}
+      #info {
+        position: absolute;
+        top: 0px; width: 100%;
+        color: #ffffff;
+        padding: 5px;
+        font-family:Monospace;
+        font-size:13px;
+        font-weight: bold;
+        text-align:center;
+      }
 
-			a {
-				color: #ffffff;
-			}
-		</style>
-	</head>
-	<body>
+      a {
+        color: #ffffff;
+      }
+    </style>
+  </head>
+  <body>
 
-		<div id="container"></div>
+    <div id="container"></div>
 
-		<script src="lib/three.js"></script>
+    <script src="lib/three.js"></script>
     <script src="lib/leap.js"></script>
     <script src="lib/deepmerge.js"></script>
     <script src="lib/LeapPano.js"></script>
-		<script type="text/javascript">
+    <script type="text/javascript">
       window.onload = function() {
         pano = new LeapPano({container: 'container', files: ['images/basque.jpg'] })
         pano.init()
@@ -48,6 +48,6 @@
       function changeFile(file) {
         pano.setFilePath(file)
       }
-		</script>
-	</body>
+    </script>
+  </body>
 </html>
