@@ -1,13 +1,15 @@
 LeapPano
 ========
 
-This code enables to view 360° images and to navigate on it with mouse and... fingers.
+This project enables to add a panoramic image viewer on a website and to move the images with mouse and fingers. 
 It uses Leap Motion to recognize movements with hands.
+It's easily integrable. It use only JavaScript and HTML.
 
 Demo
 ----
 
 You can see a demo here : http://gcorbel.github.io/LeapPano/
+
 
 How it works
 ------------
@@ -65,6 +67,11 @@ You can customize behaviour. This is the default options :
         initialFov: 70 // The initial field of view
         initialLon: 0 // The initial horizontal position
         initialLat: 0 // The initial vertical position
+        
+Dependencies
+------------
+
+This project use [Three.js](http://threejs.org/), [Leap.js](https://github.com/leapmotion/leapjs) and [deepmerge](https://github.com/nrf110/deepmerge)
 
 How I made it
 -------------
