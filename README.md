@@ -50,6 +50,7 @@ Options
 -------
 
 You can customize behaviour. This is the default options :
+
     container: null // The id of the containing div
     files: [] // Path to files. If there is many files, you can change the image by drawing a circle on the screen with Leap.
     defaultOptions:
