@@ -39,7 +39,8 @@ class window.LeapPano
   setFilePath: (path) =>
     @view.setFilePath(path)
 
-  setFrame: (frame) =>
+
+  refresh: (frame) =>
     @leap.setFrame(frame)
 
   onWindowResize: =>
@@ -75,13 +76,13 @@ class LeapPano.AutoMotion
 
     @oldLat = @view.getLat()
     @oldLon = @view.getLon()
-    
+
     if @count == @options.timeBeforeAutoMove / LeapPano.AutoMotion.LOOP_SEED
       @startToMove()
     else if @count == 0
       @stopToMove()
 
-    setTimeout(@checkActivity, LeapPano.AutoMotion.LOOP_SEED)
+    requestAnimationFrame(@checkActivity)
 
   positionChanged: =>
     @view.getLon() != @oldLon || @view.getLat() != @oldLat
@@ -105,18 +106,18 @@ class LeapPano.AutoMotion
 
       @oldLat = @view.getLat()
       @oldLon = @view.getLon()
-      setTimeout(@move, 1)
+      requestAnimationFrame(@move)
 
 class LeapPano.LeapMotion
   constructor: (view, options) ->
     @view = view
     @options = options
-    
+
   setFrame: (frame) ->
     @frame = frame
 
   init: ->
-    setTimeout(@checkMotion, 1)
+    requestAnimationFrame(@checkMotion)
 
   checkMove: =>
     finger = @frame.fingers[0]
@@ -147,7 +148,7 @@ class LeapPano.LeapMotion
       @checkMove()
       @checkGestures()
 
-    setTimeout(@checkMotion, 1)
+    requestAnimationFrame(@checkMotion)
 
 class LeapPano.View
   constructor: (options) ->
@@ -257,16 +258,16 @@ class LeapPano.Mouse
     @isUserInteracting = false
 
   onDocumentMouseWheel: (event) =>
-   
+
     fov = @view.getFov()
     # WebKit
     if event.wheelDeltaY
       fov -= event.wheelDeltaY * 0.05
-   
+
     # Opera / Explorer 9
     else if event.wheelDelta
       fov -= event.wheelDelta * 0.05
-   
+
     # Firefox
     else fov += event.detail * 1.0  if event.detail
     @view.setFov(fov)
