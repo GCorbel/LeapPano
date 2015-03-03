@@ -35,7 +35,7 @@ Here is a basic example :
             pano.init()
 
             Leap.loop({enableGestures: true}, function(frame) {
-              pano.setFrame(frame)
+              pano.refresh(frame)
             })
           }
 
